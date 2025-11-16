@@ -1,67 +1,133 @@
-# 🧩 OS-Simulator
+🧩 OS-Simulator
 
-Simulador modular de un sistema operativo educativo, desarrollado en Python.  
-El objetivo del proyecto es modelar los componentes fundamentales de un sistema operativo —como procesos, planificación y gestión de recursos— de forma didáctica y extensible.
+Simulador modular de un sistema operativo educativo en Python.
+El proyecto modela componentes reales de un SO —procesos, planificación y gestión de recursos— con un enfoque didáctico y extensible.
 
----
-
-## 🧱 Estructura del proyecto
-
+🧱 Estructura del proyecto
 os-simulator/
 ├── models/
-│ ├── pcb.py # Define el bloque de control de proceso (PCB)
-│ ├── process.py # Representación lógica del proceso
-│ ├── process_manager.py # Gestor de procesos: colas y cambios de contexto
-├── schedulers/ # (Pendiente) Algoritmos de planificación
-│ ├── fcfs.py
-│ ├── round_robin.py
-│ ├── sjf.py
-├── filesystem/ # (Pendiente) Simulación de sistema de archivos
-├── ui/ # (Pendiente) Consola o interfaz gráfica
-├── utils/ # Utilidades y métricas de simulación
-├── tests/ # Casos de prueba y validación de módulos
+│   ├── pcb.py                # Process Control Block
+│   ├── process.py            # Lógica de procesos
+│   ├── process_manager.py    # Gestor de colas y estados
+│
+├── schedulers/
+│   ├── scheduler_base.py     # Clase base para planificadores
+│   ├── fcfs.py               # First-Come, First-Served
+│   ├── round_robin.py        # (Pendiente)
+│   ├── sjf.py                # (Pendiente)
+│
+├── filesystem/               # (Pendiente)
+├── ui/                       # (Pendiente)
+├── utils/                    # Utilidades
+├── tests/                    # Pruebas unitarias
 └── README.md
 
----
+⚙️ Estado del desarrollo
 
-## ⚙️ Estado del desarrollo
+Esta sección está pensada para actualizar rápidamente sprint por sprint:
 
-### ✅ **Sprint 1 — Gestión básica de procesos**
+Sprint 1 — Gestión básica de procesos
+Módulo	Estado	Resumen
+PCB	✅ Completado	Información de control del proceso (PID, estado, tiempos, prioridad).
+Process	✅ Completado	Lógica de ejecución, cambios de estado y métricas.
+ProcessManager	⚙️ MVP Listo	Maneja colas READY/BLOCKED/TERMINATED y cambio de contexto básico.
+SchedulerBase	✅ Completado	Plantilla para algoritmos de planificación.
+FCFSScheduler	✅ Completado	Implementa FCFS, timeline y métricas.
+📘 Módulos implementados
+📌 PCB (models/pcb.py)
 
-| Módulo | Estado | Descripción |
-|--------|---------|-------------|
-| `PCB` | ✅ Completado | Contiene toda la información de control del proceso (PID, estado, tiempos, prioridad, etc.). |
-| `Process` | ✅ Completado | Representa la lógica de un proceso, interactuando con su PCB. |
-| `ProcessManager` | ⚙️ En progreso | Gestiona colas de procesos, creación y cambio de contexto. |
+Estructura que almacena:
 
----
+PID
 
-## 📘 Clases principales
+Estado del proceso
 
-### **PCB**
-Representa el bloque de control de proceso.  
-Guarda información sobre el estado, tiempo restante, tiempos de llegada y ejecución, y métricas de planificación.
+Program counter
 
-### **Process**
-Capa de abstracción que maneja la lógica de ejecución del proceso.  
-Usa internamente un `PCB` para almacenar su información.
+Arrival / Burst / Remaining time
 
-### **ProcessManager**
-Administra los procesos del sistema, manteniendo las colas de:
-- **READY** → procesos listos para ejecutar  
-- **BLOCKED** → procesos en espera  
-- **TERMINATED** → procesos finalizados  
+Prioridad
 
-Permite crear nuevos procesos y realizar transiciones entre estados.
+Métricas: turnaround, waiting, response
 
----
+Es la fuente de verdad del proceso.
 
-## 🧪 Pruebas actuales
+📌 Process (models/process.py)
 
-Ubicación: `tests/test_processes.py`
+Capa lógica sobre el PCB:
 
-```python
+Cambio de estado
+
+Ejecución simulada (execute())
+
+Actualización de tiempos
+
+Detección de finalización
+
+Menos datos, más comportamiento
+
+📌 ProcessManager (models/process_manager.py)
+
+MVP funcional con:
+
+READY queue
+
+BLOCKED queue
+
+TERMINATED list
+
+Proceso en CPU
+
+Creación de procesos
+
+Cambio de contexto simple
+
+Bloqueo/desbloqueo
+
+Es el puente entre los procesos y los planificadores.
+
+📌 Scheduler Base (schedulers/scheduler_base.py)
+
+Define la interfaz estándar:
+
+add_process()
+
+run()
+
+compute_metrics()
+
+Registro de timeline
+
+Lista de procesos
+
+Todos los algoritmos heredan de aquí.
+
+📌 FCFS Scheduler (schedulers/fcfs.py)
+
+Implementación completa de First-Come, First-Served:
+
+Ordena por arrival time
+
+Ejecuta sin interrupciones
+
+Registra (inicio, fin) de cada proceso
+
+Métricas:
+
+Average waiting time
+
+Average turnaround time
+
+Throughput
+
+🧪 Pruebas disponibles
+
+Ubicación: tests/test_processes.py
+
 procesos_test1 = [
     {"pid": 1, "llegada": 0, "rafaga": 5, "usuario": "usuario1"},
     {"pid": 2, "llegada": 1, "rafaga": 3, "usuario": "usuario2"}
 ]
+
+
+Pruebas iniciales para validar creación y transición básica de procesos.
