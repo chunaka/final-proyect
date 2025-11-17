@@ -1,113 +1,105 @@
 # 🧩 OS-Simulator
 
-Simulador modular de un sistema operativo en Python.  
-El proyecto modela componentes reales de un SO: procesos, planificación y gestión de recursos, con un enfoque modular y extensible
+Simulador modular de un sistema operativo en Python. Modela procesos, planificación y gestión básica de recursos con una arquitectura extensible.
 
 ## 🧱 Estructura actual del proyecto
 
 ```
 os-simulator/
 ├── models/
-│   ├── pcb.py                # Process Control Block
-│   ├── process.py            # Lógica de procesos
-│   ├── process_manager.py    # Gestor de colas y estados
+│   ├── pcb.py
+│   ├── process.py
+│   ├── process_manager.py
 │
 ├── schedulers/
-│   ├── scheduler_base.py     # Clase base para planificadores
-│   ├── fcfs.py               # First-Come, First-Served
+│   ├── scheduler_base.py
+│   ├── fcfs.py
 │   ├── round_robin.py        # (Pendiente)
 │   ├── sjf.py                # (Pendiente)
 │
+├── ui/
+│   ├── console.py            # Interfaz de consola
+│
 ├── filesystem/               # (Pendiente)
-├── ui/                       # (Pendiente)
-├── utils/                    # Utilidades
-├── tests/                    # Pruebas unitarias
+├── utils/
+├── tests/
+│   ├── test_processes.py
+│   ├── processes_example.txt # Archivo de carga
+│
+├── main.py
 └── README.md
 ```
 
 ## ⚙️ Estado del desarrollo
 
+### Gestión básica de procesos
 
-### Sprint 1 — Gestión básica de procesos
+| Módulo | Estado |
+|--------|--------|
+| PCB | ✅ |
+| Process | ✅ |
+| ProcessManager | ⚙️ MVP |
+| SchedulerBase | ✅ |
+| FCFS | ✅ |
 
-| Módulo | Estado | Resumen |
-|--------|--------|---------|
-| PCB | ✅ Completado | Información de control del proceso (PID, estado, tiempos, prioridad). |
-| Process | ✅ Completado | Lógica de ejecución, cambios de estado y métricas. |
-| ProcessManager | ⚙️ MVP Listo | Maneja colas READY/BLOCKED/TERMINATED y cambio de contexto básico. |
-| SchedulerBase | ✅ Completado | Plantilla para algoritmos de planificación. |
-| FCFSScheduler | ✅ Completado | Implementa FCFS, timeline y métricas. |
+### Interfaz de consola
 
-## 📘 Módulos implementados
+| Elemento | Estado | Resumen |
+|----------|--------|---------|
+| `main.py` | ✅ | Punto de entrada del simulador. |
+| `ui/console.py` | ✅ | Menú interactivo, carga, ejecución y visualización. |
+| Carga desde archivo | ✅ | Compatible con formato `pid,arrival,burst,priority,user`. |
+| Ejecución FCFS | ✅ | Llama al scheduler y registra el timeline. |
+| Resultados | ✅ | Muestra timeline ASCII. |
+| Métricas | ✅ | Waiting, turnaround y throughput. |
 
-### 📌 PCB (models/pcb.py)
+## 📘 Módulos principales
 
-Estructura que almacena:
+### 📌 ProcessManager
 
-- PID
-- Estado del proceso
-- Program counter
-- Arrival / Burst / Remaining time
-- Prioridad
-- Métricas: turnaround, waiting, response
+Gestión básica de colas y creación de procesos. Ahora incluye:
 
+- `load_from_file(path)` para cargar procesos desde TXT.
+- Integración con la interfaz de consola.
 
-### 📌 Process (models/process.py)
+### 📌 FCFS Scheduler
 
-Capa lógica sobre el PCB:
+Ejecución secuencial basada en tiempos de llegada:
 
-- Cambio de estado
-- Ejecución simulada (`execute()`)
-- Actualización de tiempos
-- Detección de finalización
+- Ordena por arrival time.
+- Registra intervalos (start → end).
+- Calcula métricas globales.
 
+### 📌 Console UI (`ui/console.py`)
 
-### 📌 ProcessManager (models/process_manager.py)
+Funcionalidades implementadas:
 
-MVP funcional con:
+- Menú interactivo.
+- Cargar procesos desde archivo.
+- Ejecutar FCFS.
+- Mostrar timeline ASCII.
+- Mostrar métricas del algoritmo.
 
-- READY queue
-- BLOCKED queue
-- TERMINATED list
-- Proceso en CPU
-- Creación de procesos
-- Cambio de contexto simple
-- Bloqueo/desbloqueo
+**Ejemplo de salida del Timeline:**
 
-
-### 📌 Scheduler Base (schedulers/scheduler_base.py)
-
-Define la interfaz estándar:
-
-- `add_process()`
-- `run()`
-- `compute_metrics()`
-- Registro de timeline
-- Lista de procesos
-
-
-### 📌 FCFS Scheduler (schedulers/fcfs.py)
-
-Implementación completa de **First-Come, First-Served**:
-
-- Ordena por arrival time
-- Ejecuta sin interrupciones
-- Registra (inicio, fin) de cada proceso
-
-**Métricas:**
-- Average waiting time
-- Average turnaround time
-- Throughput
-
-## 🧪 Pruebas disponibles
-
-**Ubicación:** `tests/test_processes.py`
-
-```python
-procesos_test1 = [
-    {"pid": 1, "llegada": 0, "rafaga": 5, "usuario": "usuario1"},
-    {"pid": 2, "llegada": 1, "rafaga": 3, "usuario": "usuario2"}
-]
+```
+P1|=====|0->5
+P2|===|5->8
+P3|========|8->16
 ```
 
-Pruebas iniciales para validar creación y transición básica de procesos.
+## 🧪 Pruebas
+
+En `tests/`:
+
+- `test_processes.py`
+- `processes_example.txt`: usado para validar la carga de procesos.
+
+**Formato del archivo:**
+
+```
+# pid,arrival,burst,priority,user
+1,0,5,0,alice
+2,1,3,1,bob
+3,2,8,0,root
+```
