@@ -5,7 +5,7 @@ class Process:
     High_level representation of a process that wraps its PCB.
     """
 
-    def __init__(self, pid:int, burst_time:int, arrival_time:int=0, priority:int=0, user:str=None):
+    def __init__(self, pid:int, burst_time:int, arrival_time:int=0, priority:int=0, user:str="") -> None:
         self.pcb = PCB(pid, burst_time, arrival_time, priority)
         self.user = user
     

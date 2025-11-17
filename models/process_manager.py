@@ -74,3 +74,27 @@ class ProcessManager:
             self.blocked_queue.remove(process)
             process.change_state(ProcessState.READY)
             self.ready_queue.append(process)
+    
+    def load_from_file(self, filepath:str):
+
+        try:
+            with open(filepath, "r") as f:
+                for line in f:
+                    line = line.strip()
+                    if not line or line.startswith("#"):
+                        continue
+
+                    parts = line.split(",")
+                    if len(parts) < 5:
+                        raise ValueError(f"[ERROR] Formato de línea inválido: {line}")
+
+                    pid = int(parts[0])
+                    arrival = int(parts[1])
+                    burst = int(parts[2])
+                    priority = int(parts[3])
+                    user = parts[4]
+
+                    self.create_process(pid, burst, arrival, priority, user)
+        except Exception as e:
+            print(f"[ERROR] No se pudieron cargar los procesos: {e}")
+                    

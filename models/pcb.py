@@ -44,5 +44,5 @@ class PCB:
         self.completion_time = 0
         self.start_time = -1
         
-    def __str__(self):
-        return (f"PCB(PID={self.pid}, User = {self.user}, State={self.state.value}, Remaining={self.remaining_time}, Priority={self.priority})")
+    # def __str__(self):
+    #     return (f"PCB(PID={self.pid}, User = {self.user}, State={self.state.value}, Remaining={self.remaining_time}, Priority={self.priority})")

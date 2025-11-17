@@ -1,4 +1,4 @@
-from scheduler_base import Scheduler
+from schedulers.scheduler_base import Scheduler
 
 class FCFSScheduler(Scheduler):
     """
