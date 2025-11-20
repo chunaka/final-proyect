@@ -20,7 +20,7 @@ class FCFSScheduler(Scheduler):
             self.timeline.append((process.pid, start, end))
 
             process.start_time = start
-            process.finish_time = end
+            process.completion_time = end
 
             current_time = end
     
@@ -31,9 +31,9 @@ class FCFSScheduler(Scheduler):
         n = len(self.processes)
 
         waiting = sum(process.start_time - process.arrival_time for process in self.processes) / n
-        turnaround = sum(process.finish_time - process.arrival_time for process in self.processes) / n
+        turnaround = sum(process.completion_time - process.arrival_time for process in self.processes) / n
 
-        total_time = max(process.finish_time for process in self.processes)
+        total_time = max(process.completion_time for process in self.processes)
         throughput = n / total_time
 
         return {
