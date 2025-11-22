@@ -13,6 +13,7 @@ class ProcessManager:
         self.blocked_queue = deque()
         self.terminated_list = []
         self.current_process = None
+        self._context_switch_count = 0
     
     def create_process(self, pid:int, burst_time:int, arrival_time:int=0, priority:int=0, user:str="system") -> Process:
         """
@@ -43,8 +44,28 @@ class ProcessManager:
         if self.ready_queue:
             self.current_process = self.ready_queue.popleft()
             self.current_process.change_state(ProcessState.RUNNING)
+            self._context_switch_count += 1
         else:
             self.current_process = None
+
+    def execute_current(self, time_units: int) -> None:
+        """
+        Executes the current process for the specified time units.
+        """
+        if self.current_process:
+            self.current_process.execute(time_units)
+    
+    def has_ready_processes(self) -> bool:
+        """
+        Checks if there are processes in the ready queue.
+        """
+        return len(self.ready_queue) > 0
+    
+    def context_switch_count(self) -> int:
+        """
+        Returns the number of context switches performed.
+        """
+        return self._context_switch_count
 
     def terminate_current_process(self, current_time:int):
         """
@@ -97,4 +118,3 @@ class ProcessManager:
                     self.create_process(pid, burst, arrival, priority, user)
         except Exception as e:
             print(f"[ERROR] No se pudieron cargar los procesos: {e}")
-                    

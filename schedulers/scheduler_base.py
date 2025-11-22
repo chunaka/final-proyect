@@ -3,12 +3,9 @@ class Scheduler:
     Base Scheduler class.
     Provides common structures for all scheduling algorithms.
     """
-    def __init__(self) -> None:
-        self.processes = []
+    def __init__(self, process_manager) -> None:
+        self.pm = process_manager
         self.timeline = []
-
-    def add_process(self, process):
-        self.processes.append(process)
 
     def run(self):
         """
