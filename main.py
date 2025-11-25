@@ -149,9 +149,27 @@ def run_filesystem_module():
         print()
         fs = create_demo_filesystem()
     
-    # Ejecutar CLI del filesystem
-    cli = FileSystemCLI(fs)
-    cli.run()
+    # Seleccionar interfaz
+    print()
+    print("¿Qué interfaz desea usar?")
+    print()
+    print("  1. Interfaz de línea de comandos (CLI)")
+    print("  2. Interfaz gráfica (GUI)")
+    print()
+    print("-" * 60)
+    
+    ui_choice = input("\nIngrese su opción (1-2): ").strip()
+    
+    if ui_choice == "2":
+        # Ejecutar GUI del filesystem
+        from ui.filesystem_gui import FileSystemGUI
+        print("\n[INFO] Iniciando interfaz gráfica...\n")
+        gui = FileSystemGUI(fs)
+        gui.run()
+    else:
+        # Ejecutar CLI del filesystem
+        cli = FileSystemCLI(fs)
+        cli.run()
     
     clear_screen()
     print("\n[INFO] Volviendo al menú principal...\n")

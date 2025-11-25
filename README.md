@@ -1,199 +1,150 @@
-# 🧩 OS-Simulator
+# OS Simulator - Operating System Project
 
-Simulador modular de un sistema operativo en Python. Modela procesos, planificación, gestión de recursos y sistema de archivos con una arquitectura extensible.
+Comprehensive operating system simulator implementing process scheduling algorithms and a virtual file system with Unix-style permissions.
 
-## 🎯 Características Destacadas
+## 📋 Table of Contents
 
-- ✅ **Context Switching**: Implementación completa del cambio de contexto entre procesos
-- ✅ **Tres Schedulers**: FCFS, SJF y Round Robin completamente funcionales
-- ✅ **Interfaz Mejorada**: UI de consola con navegación clara y limpieza de pantalla
-- ✅ **Métricas Detalladas**: Seguimiento de context switches, tiempos de espera y throughput
-- ✅ **Sistema de Archivos**: Gestión completa de archivos con permisos y usuarios
+- [Features](#features)
+- [Project Structure](#project-structure)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Modules](#modules)
+  - [Process Scheduling](#process-scheduling)
+  - [File System](#file-system)
+- [Examples](#examples)
+- [Development](#development)
 
-## 🧱 Estructura actual del proyecto
+## ✨ Features
+
+### Process Scheduling (Module 1 & 2)
+- ✅ **FCFS (First Come First Served)** - Non-preemptive scheduling
+- ✅ **SJF (Shortest Job First)** - Non-preemptive scheduling
+- ✅ **Round Robin** - Preemptive scheduling with configurable quantum
+- ✅ **Context Switch Tracking** - Monitor process state changes
+- ✅ **Process Manager** - Centralized process lifecycle management
+- ✅ **Performance Metrics** - Turnaround time, waiting time, response time
+- ✅ **Timeline Visualization** - Gantt chart display
+
+### File System (Module 3)
+- ✅ **Unix-style Permissions** - rwx permissions for owner/group/others
+- ✅ **User Management** - Multiple users with UID and groups
+- ✅ **Hierarchical Directory Structure** - Tree-based filesystem
+- ✅ **18+ Linux Commands** - Full CLI interface
+- ✅ **File Operations** - Create, read, write, delete files and directories
+- ✅ **Permission Control** - chmod, chown commands
+- ✅ **Config File Support** - Load filesystem from configuration file
+
+## 📁 Project Structure
 
 ```
 os-simulator/
 ├── models/
-│   ├── __init__.py
-│   ├── pcb.py                # Process Control Block
-│   ├── process.py            # High-level process wrapper
-│   └── process_manager.py    # Process lifecycle management + context_switch
-│
+│   ├── process.py         # Process class with PCB
+│   ├── pcb.py            # Process Control Block
+│   └── process_manager.py # Process lifecycle manager
 ├── schedulers/
-│   ├── __init__.py
-│   ├── scheduler_base.py     # Base scheduler con ProcessManager
-│   ├── fcfs.py               # First Come First Served
-│   ├── sjf.py                # Shortest Job First
-│   └── round_robin.py        # Round Robin (preemptive)
-│
-├── ui/
-│   ├── __init__.py
-│   ├── console.py            # Enhanced console interface
-│   └── gui.py                # Interfaz gráfica (Pendiente)
-│
+│   ├── scheduler_base.py  # Base scheduler class
+│   ├── fcfs.py           # FCFS implementation
+│   ├── sjf.py            # SJF implementation
+│   └── round_robin.py    # Round Robin implementation
 ├── filesystem/
-│   ├── __init__.py
-│   ├── node.py               # Nodos del sistema de archivos
-│   ├── file_system.py        # Sistema de archivos
-│   ├── permissions.py        # Gestión de permisos
-│   ├── user.py               # Gestión de usuarios
-│   └── commands.py           # Comandos del sistema
-│
-├── utils/
+│   ├── user.py           # User class with UID and groups
+│   ├── permissions.py    # Unix-style permissions (rwx)
+│   ├── node.py           # Node, File, and Directory classes
+│   ├── file_system.py    # FileSystem orchestrator
+│   ├── commands.py       # CLI with 18+ commands
+│   └── loader.py         # Load filesystem from config file
+├── ui/
+│   └── console.py        # Console UI for schedulers
 ├── tests/
-│   ├── test_processes.py
-│   └── processes_example.txt # Archivo de prueba
-│
-├── main.py
-├── requirements.txt
-└── README.md
+│   ├── processes_example.txt     # Example process configuration
+│   └── filesystem_example.txt    # Example filesystem configuration
+└── main.py               # Main entry point
+
 ```
 
-## ⚙️ Estado del desarrollo
+## 🚀 Installation
 
-### Gestión de procesos y scheduling
+### Prerequisites
+- Python 3.10 or higher
 
-| Módulo | Estado | Características |
-|--------|--------|----------------|
-| PCB | ✅ | Control block completo con métricas |
-| Process | ✅ | Wrapper de alto nivel con estados |
-| ProcessManager | ✅ | **Con context_switch y tracking** |
-| SchedulerBase | ✅ | Integración con ProcessManager |
-| FCFS | ✅ | No preemptivo, usa context_switch |
-| SJF | ✅ | No preemptivo, selección por burst time |
-| Round Robin | ✅ | **Preemptivo con quantum configurable** |
+### Setup
 
-### Sistema de archivos
-
-| Módulo | Estado |
-|--------|--------|
-| Node | ✅ |
-| FileSystem | ✅ |
-| Permissions | ✅ |
-| User | ✅ |
-| Commands | ✅ |
-
-### Interfaz de usuario
-
-| Elemento | Estado | Características |
-|----------|--------|----------------|
-| `main.py` | ✅ | Selección de scheduler con validación |
-| `ui/console.py` | ✅ | **UI mejorada con headers y limpieza** |
-| `ui/gui.py` | ⚙️ | Interfaz gráfica (Pendiente) |
-| Carga desde archivo | ✅ | Formato CSV con validación |
-| Timeline visual | ✅ | Diagrama de Gantt con barras Unicode |
-| Métricas | ✅ | **Incluye contador de context switches** |
-
-## 📘 Módulos principales
-
-### 📌 ProcessManager
-
-**Gestión centralizada de procesos con context switching:**
-
-```python
-# Métodos principales
-- create_process(pid, burst_time, arrival_time, priority, user)
-- context_switch()              # ⭐ Cambio de contexto entre procesos
-- execute_current(time_units)   # Ejecuta proceso actual
-- terminate_current_process(current_time)
-- has_ready_processes()         # Verifica ready_queue
-- context_switch_count()        # ⭐ Contador de switches
-- load_from_file(filepath)      # Carga desde archivo
+1. Clone the repository:
+```bash
+git clone https://github.com/chunaka/final-proyect.git
+cd os-simulator
 ```
 
-**Características clave:**
-- Gestión de colas (ready, blocked, terminated)
-- Tracking automático de context switches
-- Manejo de estados de procesos
-
-### 📌 FCFS Scheduler
-
-**First Come First Served - No preemptivo:**
-
-- Ordena procesos por tiempo de llegada
-- **Usa `context_switch()` para cada proceso**
-- Maneja períodos de inactividad (idle time)
-- Calcula métricas: waiting time, turnaround time, throughput
-
-**Context switches esperados:** 1 por proceso (N procesos = N switches)
-
-### 📌 SJF Scheduler
-
-**Shortest Job First - No preemptivo:**
-
-- Selecciona el proceso con menor burst time disponible
-- **Usa `context_switch()` para cada proceso**
-- Reordena ready_queue por burst time dinámicamente
-- Optimiza tiempo promedio de espera
-
-**Context switches esperados:** 1 por proceso (N procesos = N switches)
-
-### 📌 Round Robin Scheduler
-
-**Round Robin - Preemptivo con quantum:**
-
-- **Caso de uso ideal para context_switch**
-- Quantum configurable (default: 2)
-- Reencolación automática de procesos no completados
-- **Múltiples context switches por proceso**
-
-**Context switches esperados:** Significativamente > N (depende del quantum)
-
-**Ejemplo con quantum=2:**
-```
-P1 (burst=5): ejecuta 2 → switch → ejecuta 2 → switch → ejecuta 1 ✓
-P2 (burst=3): ejecuta 2 → switch → ejecuta 1 ✓
-P3 (burst=8): ejecuta 2 → switch → ejecuta 2 → switch → ...
+2. Create virtual environment (optional but recommended):
+```bash
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
 ```
 
-### 📌 Console UI (`ui/console.py`)
-
-**Interfaz mejorada con:**
-
-- ✅ Limpieza de pantalla entre operaciones
-- ✅ Headers formateados para cada sección
-- ✅ Separadores visuales claros
-- ✅ Pausas para revisar resultados
-- ✅ Mensajes con formato `[OK]`, `[ERROR]`, `[INFO]`
-
-**Funcionalidades:**
-
-1. **Cargar procesos**: Desde archivo con vista previa
-2. **Ejecutar scheduler**: Con reporte de context switches
-3. **Timeline visual**: Diagrama de Gantt con Unicode
-4. **Métricas detalladas**: Por proceso y promedio global
-
-**Ejemplo de Timeline:**
-```
-Diagrama de Gantt:
-
-  P1 │█████│ [ 0 → 5] (5 unidades)
-  P2 │███│ [ 5 → 8] (3 unidades)
-  P3 │████████│ [ 8 → 16] (8 unidades)
+3. Run the simulator:
+```bash
+python main.py
 ```
 
-**Ejemplo de ejecución:**
+## 💻 Usage
+
+### Main Menu
+
+When you run `main.py`, you'll see:
+
 ```
-[OK] Scheduler ejecutado exitosamente
-[INFO] Context switches realizados: 9
+============================================================
+============ SIMULADOR DE SISTEMA OPERATIVO ===============
+============================================================
+
+SELECCIONE UN MÓDULO:
+
+  1. Planificación de Procesos (Schedulers)
+  2. Sistema de Archivos
+  3. Salir
+
+============================================================
 ```
 
-### 📌 Sistema de Archivos (`filesystem/`)
+### Option 1: Process Scheduling
 
-Implementación completa de sistema de archivos:
+1. Choose a scheduling algorithm (FCFS, SJF, Round Robin)
+2. For Round Robin, specify the quantum
+3. Load processes from a file (e.g., `tests/processes_example.txt`)
+4. Execute the scheduler
+5. View results and metrics
 
-- **Node**: Estructura de archivo/directorio con metadatos
-- **FileSystem**: Operaciones CRUD sobre archivos y directorios
-- **Permissions**: Sistema de permisos (lectura, escritura, ejecución)
-- **User**: Gestión de usuarios y propietarios
-- **Commands**: Comandos del sistema (ls, cd, mkdir, etc.)
+### Option 2: File System
 
-## 🧪 Pruebas
+1. Choose to load from config file or use demo
+2. Use Linux-like commands to interact with the filesystem
+3. Type `help` to see all available commands
 
-### Archivo de prueba
+## 📚 Modules
 
-`tests/processes_example.txt`:
+### Process Scheduling
+
+#### Algorithms Implemented
+
+**FCFS (First Come First Served)**
+- Non-preemptive
+- Processes executed in order of arrival
+- Simple but can cause convoy effect
+
+**SJF (Shortest Job First)**
+- Non-preemptive
+- Selects process with shortest burst time
+- Minimizes average waiting time
+
+**Round Robin**
+- Preemptive
+- Time quantum-based scheduling
+- Fair CPU allocation
+- Configurable quantum value
+
+#### Process File Format
+
 ```
 # pid,arrival,burst,priority,user
 1,0,5,0,alice
@@ -201,73 +152,404 @@ Implementación completa de sistema de archivos:
 3,2,8,0,root
 ```
 
-### Resultados esperados
+#### Metrics Calculated
 
-| Scheduler | Context Switches | Observación |
-|-----------|------------------|-------------|
-| FCFS | 3 | 1 por proceso |
-| SJF | 3 | 1 por proceso |
-| Round Robin (q=2) | 9 | Múltiples por preemption |
+- **Turnaround Time**: Total time from arrival to completion
+- **Waiting Time**: Time spent in ready queue
+- **Response Time**: Time from arrival to first execution
+- **Context Switches**: Number of process state changes
 
-## 🚀 Uso
+### File System
+
+#### Core Classes
+
+**User**
+- Username, UID, and groups
+- Root user (UID=0) with special privileges
+
+**Permissions**
+- Unix-style rwx (read/write/execute)
+- Separate permissions for owner/group/others
+- Octal notation support (e.g., "644", "755")
+
+**Node (Abstract)**
+- Base class for files and directories
+- Metadata: owner, permissions, timestamps
+
+**File**
+- Text content storage
+- Read/write operations with permission checks
+
+**Directory**
+- Hierarchical structure with children
+- Parent-child relationships
+- Path resolution
+
+**FileSystem**
+- Orchestrates all operations
+- User management
+- Navigation (cd, pwd)
+- File operations (touch, mkdir, rm, cat, echo)
+- Permission management (chmod, chown)
+
+#### Available Commands
+
+| Command | Description |
+|---------|-------------|
+| `ls [-a] [-l] [path]` | List directory contents |
+| `cd [path]` | Change directory |
+| `pwd` | Print working directory |
+| `mkdir <dir>` | Create directory |
+| `touch <file>` | Create empty file |
+| `rm [-r] <file>` | Remove file/directory |
+| `cat <file>` | Display file content |
+| `echo <text> > <file>` | Write to file |
+| `echo <text> >> <file>` | Append to file |
+| `chmod <perms> <file>` | Change permissions |
+| `chown <user> <file>` | Change owner |
+| `tree [-L<n>] [path]` | Display directory tree |
+| `whoami` | Show current user |
+| `su [user]` | Switch user |
+| `adduser <user> <uid>` | Add new user (root only) |
+| `clear` | Clear screen |
+| `help` | Show help |
+| `exit` | Exit file system |
+
+#### Filesystem Config File Format
+
+```
+# Comments start with #
+user,username,uid,group1,group2,...
+dir,/path/to/directory,perms,owner
+file,/path/to/file.txt,perms,owner,content
+
+# Example:
+user,alice,1000,users,developers
+dir,/home/alice,755,alice
+file,/home/alice/readme.txt,644,alice,Welcome!
+```
+
+## 📖 Examples
+
+### Process Scheduling Example
 
 ```bash
-# Activar entorno virtual
-python -m venv venv
-source venv/bin/activate  # Linux/Mac
-venv\Scripts\activate     # Windows
-
-# Instalar dependencias
-pip install -r requirements.txt
-
-# Ejecutar simulador
-python main.py
+$ python main.py
+# Select option 1 (Schedulers)
+# Choose FCFS
+# Load file: tests/processes_example.txt
+# Option 2: Execute scheduler
+# Option 3: View results
+# Option 4: View metrics
 ```
 
-**Flujo de uso:**
-1. Seleccionar scheduler (FCFS, SJF o Round Robin)
-2. Si es Round Robin, especificar quantum
-3. Cargar procesos desde archivo
-4. Ejecutar scheduler
-5. Ver timeline y métricas
+### File System Example
 
-## 📊 Métricas Calculadas
+```bash
+$ python main.py
+# Select option 2 (File System)
+# Choose option 2 (Demo)
 
-- **Waiting Time**: Tiempo desde llegada hasta primera ejecución
-- **Turnaround Time**: Tiempo total desde llegada hasta finalización
-- **Throughput**: Procesos completados por unidad de tiempo
-- **Context Switches**: ⭐ Número total de cambios de contexto
+root@os-sim:/# ls
+etc  home  tmp
 
-## 🔄 Arquitectura de Context Switching
+root@os-sim:/# cd home
+
+root@os-sim:/home# ls
+alice  bob
+
+root@os-sim:/home# cd alice
+
+root@os-sim:/home/alice# ls -l
+rw-r--r-- alice        36 readme.txt
+
+root@os-sim:/home/alice# cat readme.txt
+Welcome to Alice's home directory!
+
+root@os-sim:/home/alice# touch myfile.txt
+
+root@os-sim:/home/alice# echo "Hello World" > myfile.txt
+
+root@os-sim:/home/alice# cat myfile.txt
+Hello World
+
+root@os-sim:/home/alice# chmod 600 myfile.txt
+
+root@os-sim:/home/alice# ls -l myfile.txt
+rw------- alice        12 myfile.txt
+
+root@os-sim:/home/alice# tree /
+/
+├── etc/
+├── home/
+│   ├── alice/
+│   │   ├── readme.txt
+│   │   └── myfile.txt
+│   └── bob/
+└── tmp/
+```
+
+## 🛠️ Development
+
+### Code Style
+
+- **Documentation**: English docstrings
+- **Typing**: Type hints for function signatures
+- **Naming**: Descriptive variable and function names
+- **Comments**: Minimal, only when necessary
+
+### Architecture
+
+**Process Scheduling**
+- `ProcessManager` handles all process lifecycle operations
+- `context_switch()` centralizes state transitions
+- Schedulers use `ProcessManager` API
+
+**File System**
+- Abstract `Node` class for files and directories
+- Permission checks at operation level
+- Hierarchical tree structure with parent pointers
+
+### Testing
+
+Manual testing workflows:
+1. Process scheduling with different algorithms
+2. File system operations with different users
+3. Permission enforcement
+4. Edge cases (empty directories, permission denied, etc.)
+
+## 📝 Implementation Status
+
+### Module 1: Process Management
+- ✅ Process class with PCB
+- ✅ ProcessManager with context switching
+- ✅ Process states (NEW, READY, RUNNING, TERMINATED)
+
+### Module 2: Scheduling Algorithms
+- ✅ FCFS (First Come First Served)
+**SJF (Shortest Job First)**
+- Non-preemptive
+- Selects process with shortest burst time
+- Minimizes average waiting time
+
+**Round Robin**
+- Preemptive
+- Time quantum-based scheduling
+- Fair CPU allocation
+- Configurable quantum value
+
+#### Process File Format
 
 ```
-ProcessManager
-    ├── context_switch()
-    │   ├── Guarda proceso actual → ready_queue (si no terminado)
-    │   ├── Toma siguiente de ready_queue
-    │   ├── Cambia estados (READY → RUNNING)
-    │   └── Incrementa contador
-    │
-    └── Usado por todos los schedulers:
-        ├── FCFS: 1 switch por proceso
-        ├── SJF: 1 switch por proceso
-        └── Round Robin: múltiples switches (preemptivo)
+# pid,arrival,burst,priority,user
+1,0,5,0,alice
+2,1,3,1,bob
+3,2,8,0,root
 ```
 
-## 🎓 Características Educativas
+#### Metrics Calculated
 
-Este simulador demuestra:
+- **Turnaround Time**: Total time from arrival to completion
+- **Waiting Time**: Time spent in ready queue
+- **Response Time**: Time from arrival to first execution
+- **Context Switches**: Number of process state changes
 
-- **Diferencia entre schedulers no preemptivos y preemptivos**
-- **Impacto del quantum en Round Robin**
-- **Costo del context switching** (visible en el contador)
-- **Métricas de rendimiento** de diferentes algoritmos
-- **Arquitectura modular** para sistemas operativos
+### File System
 
-## 📝 Próximos pasos
+#### Core Classes
 
-- [ ] Interfaz gráfica (GUI)
-- [ ] Scheduler de prioridad con preemption
-- [ ] Multilevel feedback queue
-- [ ] Gestión de memoria
-- [ ] Simulación de I/O blocking
+**User**
+- Username, UID, and groups
+- Root user (UID=0) with special privileges
+
+**Permissions**
+- Unix-style rwx (read/write/execute)
+- Separate permissions for owner/group/others
+- Octal notation support (e.g., "644", "755")
+
+**Node (Abstract)**
+- Base class for files and directories
+- Metadata: owner, permissions, timestamps
+
+**File**
+- Text content storage
+- Read/write operations with permission checks
+
+**Directory**
+- Hierarchical structure with children
+- Parent-child relationships
+- Path resolution
+
+**FileSystem**
+- Orchestrates all operations
+- User management
+- Navigation (cd, pwd)
+- File operations (touch, mkdir, rm, cat, echo)
+- Permission management (chmod, chown)
+
+#### Available Commands
+
+| Command | Description |
+|---------|-------------|
+| `ls [-a] [-l] [path]` | List directory contents |
+| `cd [path]` | Change directory |
+| `pwd` | Print working directory |
+| `mkdir <dir>` | Create directory |
+| `touch <file>` | Create empty file |
+| `rm [-r] <file>` | Remove file/directory |
+| `cat <file>` | Display file content |
+| `echo <text> > <file>` | Write to file |
+| `echo <text> >> <file>` | Append to file |
+| `chmod <perms> <file>` | Change permissions |
+| `chown <user> <file>` | Change owner |
+| `tree [-L<n>] [path]` | Display directory tree |
+| `whoami` | Show current user |
+| `su [user]` | Switch user |
+| `adduser <user> <uid>` | Add new user (root only) |
+| `clear` | Clear screen |
+| `help` | Show help |
+| `exit` | Exit file system |
+
+#### Filesystem Config File Format
+
+```
+# Comments start with #
+user,username,uid,group1,group2,...
+dir,/path/to/directory,perms,owner
+file,/path/to/file.txt,perms,owner,content
+
+# Example:
+user,alice,1000,users,developers
+dir,/home/alice,755,alice
+file,/home/alice/readme.txt,644,alice,Welcome!
+```
+
+## 📖 Examples
+
+### Process Scheduling Example
+
+```bash
+$ python main.py
+# Select option 1 (Schedulers)
+# Choose FCFS
+# Load file: tests/processes_example.txt
+# Option 2: Execute scheduler
+# Option 3: View results
+# Option 4: View metrics
+```
+
+### File System Example
+
+```bash
+$ python main.py
+# Select option 2 (File System)
+# Choose option 2 (Demo)
+
+root@os-sim:/# ls
+etc  home  tmp
+
+root@os-sim:/# cd home
+
+root@os-sim:/home# ls
+alice  bob
+
+root@os-sim:/home# cd alice
+
+root@os-sim:/home/alice# ls -l
+rw-r--r-- alice        36 readme.txt
+
+root@os-sim:/home/alice# cat readme.txt
+Welcome to Alice's home directory!
+
+root@os-sim:/home/alice# touch myfile.txt
+
+root@os-sim:/home/alice# echo "Hello World" > myfile.txt
+
+root@os-sim:/home/alice# cat myfile.txt
+Hello World
+
+root@os-sim:/home/alice# chmod 600 myfile.txt
+
+root@os-sim:/home/alice# ls -l myfile.txt
+rw------- alice        12 myfile.txt
+
+root@os-sim:/home/alice# tree /
+/
+├── etc/
+├── home/
+│   ├── alice/
+│   │   ├── readme.txt
+│   │   └── myfile.txt
+│   └── bob/
+└── tmp/
+```
+
+## 🛠️ Development
+
+### Code Style
+
+- **Documentation**: English docstrings
+- **Typing**: Type hints for function signatures
+- **Naming**: Descriptive variable and function names
+- **Comments**: Minimal, only when necessary
+
+### Architecture
+
+**Process Scheduling**
+- `ProcessManager` handles all process lifecycle operations
+- `context_switch()` centralizes state transitions
+- Schedulers use `ProcessManager` API
+
+**File System**
+- Abstract `Node` class for files and directories
+- Permission checks at operation level
+- Hierarchical tree structure with parent pointers
+
+### Testing
+
+Manual testing workflows:
+1. Process scheduling with different algorithms
+2. File system operations with different users
+3. Permission enforcement
+4. Edge cases (empty directories, permission denied, etc.)
+
+## 📝 Implementation Status
+
+### Module 1: Process Management
+- ✅ Process class with PCB
+- ✅ ProcessManager with context switching
+- ✅ Process states (NEW, READY, RUNNING, TERMINATED)
+
+### Module 2: Scheduling Algorithms
+- ✅ FCFS (First Come First Served)
+- ✅ SJF (Shortest Job First)
+- ✅ Round Robin with configurable quantum
+- ✅ Performance metrics calculation
+- ✅ Timeline visualization
+
+### Module 3: File System
+- ✅ User management with UID and groups
+- ✅ Unix-style permissions (rwx)
+- ✅ Hierarchical directory structure
+- ✅ File and directory operations
+- ✅ 18+ Linux-like commands
+- ✅ CLI interface
+- ✅ Config file loader
+- ✅ GUI interface
+
+### Module 4: Memory Management
+- ⏳ Not yet implemented
+
+## 👥 Authors
+
+- **Juan Camilo Castro Montoya** - [chunaka](https://github.com/chunaka)
+
+## 📄 License
+
+This project is part of an Operating Systems course.
+
+## 🙏 Acknowledgments
+
+- Operating Systems course materials
+- Unix/Linux documentation for filesystem design
+- Process scheduling algorithms from textbooks
