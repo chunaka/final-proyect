@@ -21,7 +21,7 @@ A comprehensive operating system simulator implementing process scheduling algor
 - **Configuration Files** - Load filesystem state from config files
 - **Dual Interface** - Both CLI and GUI available
 
-## 📁Project Structure
+## Project Structure
 
 ```
 os-simulator/
